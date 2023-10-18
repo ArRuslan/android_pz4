@@ -2,14 +2,17 @@ package me.ruslan.task4.models;
 
 import android.net.Uri;
 
-public class Note {
+import java.io.File;
+import java.io.Serializable;
+
+public class Note implements Serializable {
     private String title;
     private String text;
     private String time;
     private int priority;
-    private Uri image;
+    private String image;
 
-    public Note(String title, String text, String time, int priority, Uri image) {
+    public Note(String title, String text, String time, int priority, String image) {
         this.title = title;
         this.text = text;
         this.time = time;
@@ -21,8 +24,16 @@ public class Note {
         return title;
     }
 
+    public void setTitle(String value) {
+        title = value;
+    }
+
     public String getText() {
         return text;
+    }
+
+    public void setText(String value) {
+        text = value;
     }
 
     public String getTime() {
@@ -33,11 +44,24 @@ public class Note {
         return priority;
     }
 
-    public Uri getImage() {
+    public void setPriority(int value) {
+        priority = value;
+    }
+
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Uri value) {
+    public void setImage(String value) {
         image = value;
+    }
+
+    public File getImageFile() {
+        return new File(image);
+    }
+
+    public void update(Note note) {
+        this.title = note.getTitle();
+        this.text = note.getText();
     }
 }

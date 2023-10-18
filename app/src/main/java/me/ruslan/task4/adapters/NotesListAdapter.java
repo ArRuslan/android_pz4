@@ -1,6 +1,7 @@
 package me.ruslan.task4.adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ import me.ruslan.task4.models.Note;
 public class NotesListAdapter extends ArrayAdapter<Note> implements Filterable {
     private ArrayList<Note> dataSet;
     private ArrayList<Note> dataSetFiltered;
-    Context mContext;
+    private static SearchParams search = new SearchParams("", 7);
 
     private static class ViewHolder {
         TextView txtName;
@@ -32,11 +33,40 @@ public class NotesListAdapter extends ArrayAdapter<Note> implements Filterable {
         ImageView imgIcon;
     }
 
+    private static class SearchParams {
+        private String query;
+        private int priority;
+
+        public SearchParams(String query, int priority) {
+            this.query = query;
+            this.priority = priority;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String value) {
+            query = value;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
+
+        public void setPriority(int value) {
+            priority = value;
+        }
+
+        public boolean isDefault() {
+            return query.isEmpty() && (priority == 0 || priority == 7);
+        }
+    }
+
     public NotesListAdapter(ArrayList<Note> data, Context context) {
         super(context, R.layout.notes_list, data);
         dataSetFiltered = data;
         dataSet = new ArrayList<>(data);
-        this.mContext = context;
 
     }
 
@@ -75,27 +105,75 @@ public class NotesListAdapter extends ArrayAdapter<Note> implements Filterable {
         viewHolder.txtText.setText(note.getText() == null ? "(null)" : note.getText());
         viewHolder.txtTime.setText(note.getTime());
         viewHolder.imgPriority.setImageDrawable(getPriorityDrawable(note.getPriority()));
-        if (note.getImage() == null) {
+        if (note.getImage() == null || !note.getImageFile().exists()) {
             viewHolder.imgIcon.setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.no_image));
         } else {
-            viewHolder.imgIcon.setImageURI(note.getImage());
+            viewHolder.imgIcon.setImageBitmap(BitmapFactory.decodeFile(note.getImage()));
         }
         return convertView;
     }
 
     public void filter(String query, int priority) {
+        search.setQuery(query);
+        search.setPriority(priority);
+        filter();
+    }
+
+    public void filter() {
+        String query = search.getQuery();
+        int priority = search.getPriority();
+        if(search.isDefault()) {
+            dataSetFiltered.clear();
+            dataSetFiltered.addAll(dataSet);
+            notifyDataSetChanged(false);
+            return;
+        }
+
         ArrayList<Note> result = new ArrayList<>();
 
-        for(Note note : dataSet) {
-            if(!query.isEmpty() && (!note.getTitle().contains(query) && !note.getText().contains(query)))
+        for (Note note : dataSet) {
+            if (!query.isEmpty() && (!note.getTitle().contains(query) && !note.getText().contains(query)))
                 continue;
-            if(priority != 0 && priority != 7 && ((note.getPriority() & priority) != note.getPriority()))
+            if (priority != 0 && priority != 7 && ((note.getPriority() & priority) != note.getPriority()))
                 continue;
             result.add(note);
         }
 
         dataSetFiltered.clear();
         dataSetFiltered.addAll(result);
-        notifyDataSetChanged();
+        notifyDataSetChanged(false);
+    }
+
+    public void notifyDataSetChanged() {
+        notifyDataSetChanged(true);
+    }
+
+    public void notifyDataSetChanged(boolean filter) {
+        if(filter)
+            filter();
+        super.notifyDataSetChanged();
+    }
+
+    public Note getFiltered(int idx) {
+        return dataSetFiltered.get(idx);
+    }
+
+    public void removeFiltered(int idx) {
+        Note note = dataSetFiltered.get(idx);
+        dataSetFiltered.remove(note);
+        dataSet.remove(note);
+    }
+
+    public int filteredSize() {
+        return dataSetFiltered.size();
+    }
+
+    public int getRealIndex(int idx) {
+        Note note = dataSetFiltered.get(idx);
+        return dataSet.indexOf(note);
+    }
+
+    public void addNote(Note note) {
+        dataSet.add(note);
     }
 }

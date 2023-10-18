@@ -22,4 +22,8 @@
     <string name="dialog_create_title">Create new note</string>
     <string name="dialog_create_btn_create">Create</string>
     <string name="dialog_create_text_hint">Note name</string>
+    <string name="note_edit_note_title">Note title</string>
+    <string name="note_edit_note_text">Note text</string>
+    <string name="dialog_set_priority">Set priority</string>
+    <string name="dialog_priority_set_priority">Set priority</string>
 </resources>

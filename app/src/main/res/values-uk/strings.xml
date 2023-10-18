@@ -23,4 +23,8 @@
     <string name="dialog_create_title">Створити нову нотатку</string>
     <string name="dialog_create_btn_create">Створити</string>
     <string name="dialog_create_text_hint">Назва нотатки</string>
+    <string name="note_edit_note_title">Назва нотатки</string>
+    <string name="note_edit_note_text">Текст нотатки</string>
+    <string name="dialog_set_priority">Встановити пріорітет</string>
+    <string name="dialog_priority_set_priority">Встановити пріорітет</string>
 </resources>
