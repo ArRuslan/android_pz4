@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task4</string>
+    <string name="menu_search">Пошук</string>
+    <string name="menu_filter">Фільтр</string>
+    <string name="menu_create_new">Створити</string>
+    <string name="menu_settings">Налаштування</string>
+    <string name="dialog_manage_note_s">Керування нотаткою \"%s\"</string>
+    <string name="dialog_set_icon">Встановити значок</string>
+    <string name="dialog_note_delete">Видалити</string>
+    <string name="cancel">Скасувати</string>
+    <string name="int_select_file">Оберіть файл</string>
+    <string name="error">"Помилка: "</string>
+    <string name="dialog_search_title">Пошук за назвою/текстом</string>
+    <string name="dialog_search_text_hint">Назва або текст нотатки</string>
+    <string name="dialog_search_btn_search">Пошук</string>
+    <string name="clear">Очистити</string>
+    <string name="dialog_filter_title">Фільтрація за пріорітетом</string>
+    <string name="dialog_filter_btn_apply">Застосувати</string>
+    <string name="dialog_filter_checkbox_low">Низький</string>
+    <string name="dialog_filter_checkbox_med">Середній</string>
+    <string name="dialog_filter_checkbox_high">Високий</string>
+    <string name="dialog_create_title">Створити нову нотатку</string>
+    <string name="dialog_create_btn_create">Створити</string>
+    <string name="dialog_create_text_hint">Назва нотатки</string>
+</resources>

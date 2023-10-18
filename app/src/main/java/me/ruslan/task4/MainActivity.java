@@ -1,14 +1,11 @@
 package me.ruslan.task4;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,9 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,7 +30,6 @@ import me.ruslan.task4.models.Note;
 
 
 public class MainActivity extends AppCompatActivity {
-    private ListView notes_list;
     private NotesListAdapter adapter;
     public static ArrayList<Note> notes = new ArrayList<Note>() {{
         add(new Note("Test 1", "text 1", "12:01", 1, null));
@@ -54,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        notes_list = findViewById(R.id.notes_list);
+        ListView notes_list = findViewById(R.id.notes_list);
 
         adapter = new NotesListAdapter(notes, getApplicationContext());
         notes_list.setAdapter(adapter);
@@ -63,20 +56,20 @@ public class MainActivity extends AppCompatActivity {
             Note note = notes.get(i);
 
             AlertDialog.Builder noteDialog = new AlertDialog.Builder(MainActivity.this);
-            noteDialog.setTitle(String.format("Manage note \"%s\"", note.getTitle()));
+            noteDialog.setTitle(String.format(getString(R.string.dialog_manage_note_s), note.getTitle()));
 
             LinearLayout layout = new LinearLayout(getApplicationContext());
             layout.setOrientation(LinearLayout.VERTICAL);
             Button iconBtn = new Button(getApplicationContext());
-            iconBtn.setText("Set icon");
+            iconBtn.setText(R.string.dialog_set_icon);
             Button deleteBtn = new Button(getApplicationContext());
-            deleteBtn.setText("Delete");
+            deleteBtn.setText(R.string.dialog_note_delete);
 
             layout.addView(iconBtn);
             layout.addView(deleteBtn);
             noteDialog.setView(layout);
 
-            noteDialog.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+            noteDialog.setNegativeButton(R.string.cancel, (dialog, whichButton) -> dialog.cancel());
 
             AlertDialog dialog = noteDialog.create();
             iconBtn.setOnClickListener(view1 -> {
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), 1000+noteIdx);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.int_select_file)), 1000+noteIdx);
     }
 
     @Override
@@ -112,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 copyFile(data.getData(), new File(getFilesDir(), System.currentTimeMillis() + ".png"));
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "Error: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error)+e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -149,21 +142,21 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_search) {
             AlertDialog.Builder searchDialog = new AlertDialog.Builder(MainActivity.this);
-            searchDialog.setTitle("Search notes");
+            searchDialog.setTitle(R.string.dialog_search_title);
 
             EditText searchET = new EditText(getApplicationContext());
-            searchET.setHint("Note title or text");
+            searchET.setHint(R.string.dialog_search_text_hint);
             searchET.setText(searchQuery);
             searchDialog.setView(searchET);
 
-            searchDialog.setPositiveButton("Search", (dialog, whichButton) -> {
+            searchDialog.setPositiveButton(R.string.dialog_search_btn_search, (dialog, whichButton) -> {
                 searchQuery = searchET.getText().toString();
                 adapter.filter(searchQuery, filterPriority);
             });
 
-            searchDialog.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+            searchDialog.setNegativeButton(R.string.cancel, (dialog, whichButton) -> dialog.cancel());
 
-            searchDialog.setNeutralButton("Clear", (dialog, i) -> {
+            searchDialog.setNeutralButton(R.string.clear, (dialog, i) -> {
                 searchQuery = "";
                 adapter.filter(searchQuery, filterPriority);
             });
@@ -172,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_filter) {
             AlertDialog.Builder searchDialog = new AlertDialog.Builder(MainActivity.this);
-            searchDialog.setTitle("Filter notes");
+            searchDialog.setTitle(R.string.dialog_filter_title);
 
             LinearLayout layout = new LinearLayout(getApplicationContext());
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -181,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
             CheckBox med = new CheckBox(getApplicationContext());
             CheckBox hig = new CheckBox(getApplicationContext());
 
-            low.setText("Low");
-            med.setText("Medium");
-            hig.setText("High");
+            low.setText(R.string.dialog_filter_checkbox_low);
+            med.setText(R.string.dialog_filter_checkbox_med);
+            hig.setText(R.string.dialog_filter_checkbox_high);
             low.setChecked(filterPriority == 0 || (filterPriority & 1) == 1);
             med.setChecked(filterPriority == 0 || (filterPriority & 2) == 2);
             hig.setChecked(filterPriority == 0 || (filterPriority & 4) == 4);
@@ -193,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             layout.addView(hig);
             searchDialog.setView(layout);
 
-            searchDialog.setPositiveButton("Apply", (dialog, whichButton) -> {
+            searchDialog.setPositiveButton(R.string.dialog_filter_btn_apply, (dialog, whichButton) -> {
                 int lowP, medP, higP;
                 lowP = low.isChecked() ? 1 : 0;
                 medP = med.isChecked() ? 2 : 0;
@@ -202,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
                 adapter.filter(searchQuery, filterPriority);
             });
 
-            searchDialog.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+            searchDialog.setNegativeButton(R.string.cancel, (dialog, whichButton) -> dialog.cancel());
 
-            searchDialog.setNeutralButton("Clear", (dialog, i) -> {
+            searchDialog.setNeutralButton(R.string.clear, (dialog, i) -> {
                 filterPriority = 7;
                 adapter.filter(searchQuery, filterPriority);
             });
@@ -213,18 +206,18 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_create) {
             AlertDialog.Builder newNote = new AlertDialog.Builder(MainActivity.this);
-            newNote.setTitle("Create new note");
+            newNote.setTitle(R.string.dialog_create_title);
 
             EditText noteTitle = new EditText(getApplicationContext());
-            noteTitle.setHint("Note name");
+            noteTitle.setHint(R.string.dialog_create_text_hint);
             newNote.setView(noteTitle);
 
-            newNote.setPositiveButton("Create", (dialog, whichButton) -> {
+            newNote.setPositiveButton(R.string.dialog_create_btn_create, (dialog, whichButton) -> {
                 notes.add(new Note(noteTitle.getText().toString(), null, new SimpleDateFormat("HH:mm").format(new Date()), 0, null));
                 adapter.notifyDataSetChanged();
             });
 
-            newNote.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+            newNote.setNegativeButton(R.string.cancel, (dialog, whichButton) -> dialog.cancel());
 
             newNote.show();
             return true;
