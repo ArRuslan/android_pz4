@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/menu_search"
+        app:showAsAction="always"
+        android:title="Search" />
+
+    <item
+        android:id="@+id/menu_filter"
+        android:icon="@drawable/menu_filter"
+        app:showAsAction="always"
+        android:title="Filter" />
+
+    <item
+        android:id="@+id/menu_create"
+        android:orderInCategory="100"
+        android:title="Create new"
+        tools:ignore="HardcodedText"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        android:title="Settings"
+        tools:ignore="HardcodedText"
+        app:showAsAction="never" />
+</menu>
